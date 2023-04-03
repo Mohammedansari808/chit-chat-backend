@@ -16,7 +16,6 @@ router.get("/usersdata", async function (request, response) {
 })
 
 router.get("/otheruserdata/:id", async function (request, response) {
-    console.log('im in ')
     const { id } = request.params
     const getData = await client.db("chitchat").collection("usersdata").findOne({ user_id: new ObjectId(id) })
     response.send(getData)
@@ -47,23 +46,27 @@ router.get("/getconversations/:id", async function (request, response) {
     const getConversationData = await client.db('chitchat').collection('conversation').find({ members: { $elemMatch: { $eq: id } } }).toArray()
     response.send(getConversationData)
 
-    // for (let i = 0; i < getConversationData.length; i++) {
-    //     const obj = getConversationData[i]
-    //     if (obj.members[0] != id) {
-    //         const getData = await client.db('chitchat').collection('usersdata').findOne({ _id: new ObjectId(getConversationData[i].members[0]) })
-    //         arr.push(getData)
-    //     } else if (obj.members[1] != id) {
-    //         const getData = await client.db('chitchat').collection('usersdata').findOne({ _id: new ObjectId(getConversationData[i].members[1]) })
-    //         arr.push(getData)
-    //     }
+})
 
+router.get("/get-chat/:id", async function (request, response) {
+    const { id } = request.params
+    const getChat = await client.db('chitchat').collection("all-msgs").find({
+        conversation_id: id
+    }).toArray()
+    response.send(getChat)
 
-    // }
-    // console.log(arr)
-    if (getConversationData) {
-        console.log(getConversationData)
-        console.log("i found")
+})
+
+router.post("/send-message", async function (request, response) {
+    const { data } = request.body
+
+    const sendChatData = await client.db("chitchat").collection("all-msgs").insertOne(data)
+    if (sendChatData) {
+        response.send({ message: "success" })
     }
+
+
+
 })
 
 export default router

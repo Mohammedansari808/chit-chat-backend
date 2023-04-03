@@ -26,12 +26,13 @@ app.get("/", function (request, response) {
     console.log("express connected")
 })
 const users = []
-const adduser = (userID, socketID) => {
+const adduser = async (userID, socketID) => {
     !users.some((user) => (user.userID === userID)) &&
         users.push({ userID, socketID })
+
+
 }
 const getReceiverS = (userId) => {
-
     return users.find((user) => user.userID === userId)
 }
 io.on("connection", (socket) => {
@@ -42,16 +43,21 @@ io.on("connection", (socket) => {
         console.log(users)
         io.emit("getUsers", users)
     })
-    socket.on("sendMessage", (data) => {
-        console.log(data.receiver_id)
-        const ruser = getReceiverS(data.receiver_id)
-        console.log(ruser)
-        io.to(ruser.socketID).emit("getMessage", {
-            senderID: "hoi",
-            text: data.text
-        })
+    const dates =
+        socket.on("sendMessage", (data) => {
+            console.log(data)
+            const recId = data.receiver_id[0]
+            console.log(recId)
+            const ruser = getReceiverS(recId)
+            console.log(ruser)
+            io.to(ruser.socketID).emit("getMessage", {
+                conversation_id: data.conversation_id,
+                sender: data.sender,
+                sender_name: data.sender_name,
+                text: data.text
+            })
 
-    })
+        })
 })
 
 
