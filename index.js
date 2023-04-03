@@ -35,6 +35,10 @@ const adduser = async (userID, socketID) => {
 const getReceiverS = (userId) => {
     return users.find((user) => user.userID === userId)
 }
+
+const remove = (userid) => {
+    return users.filter((user) => user.userID != userid)
+}
 io.on("connection", (socket) => {
 
     console.log("user connected")
@@ -43,21 +47,24 @@ io.on("connection", (socket) => {
         console.log(users)
         io.emit("getUsers", users)
     })
-    const dates =
-        socket.on("sendMessage", (data) => {
-            console.log(data)
-            const recId = data.receiver_id[0]
-            console.log(recId)
-            const ruser = getReceiverS(recId)
-            console.log(ruser)
-            io.to(ruser.socketID).emit("getMessage", {
-                conversation_id: data.conversation_id,
-                sender: data.sender,
-                sender_name: data.sender_name,
-                text: data.text
-            })
-
+    socket.on("sendMessage", (data) => {
+        console.log(data)
+        const recId = data.receiver_id[0]
+        console.log(recId)
+        const ruser = getReceiverS(recId)
+        console.log(ruser)
+        io.to(ruser.socketID).emit("getMessage", {
+            conversation_id: data.conversation_id,
+            sender: data.sender,
+            sender_name: data.sender_name,
+            text: data.text
         })
+
+    })
+    socket.on("disconnection", (data) => {
+        remove(data)
+        console.log(users + "removed")
+    })
 })
 
 
