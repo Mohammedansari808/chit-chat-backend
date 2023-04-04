@@ -5,17 +5,15 @@ import { auth } from "../middleware/auth.js"
 const router = express.Router()
 import { ObjectId } from "mongodb";
 import { client } from "../index.js";
-router.get("/conversation/:id", auth, async function (request, response) {
-    const id = request.params
-    const getData = await client.db('chitchat').collection("conversation").find({ _id: new ObjectId(id) }).toArray()
-})
 
+//to get all users data
 router.get("/usersdata", auth, async function (request, response) {
     const getData = await client.db("chitchat").collection("usersdata").find({}).toArray()
     response.send(getData)
 
 })
 
+//to show frds in the my friends
 router.get("/otheruserdata/:id", auth, async function (request, response) {
     const { id } = request.params
     const getData = await client.db("chitchat").collection("usersdata").findOne({ user_id: new ObjectId(id) })
@@ -23,14 +21,15 @@ router.get("/otheruserdata/:id", auth, async function (request, response) {
 
 })
 
-
+//creating a new conversation id
 router.post("/conversation-create", auth, async function (request, response) {
 
     const { data } = request.body
     const finalData = {
         conversation_id: new ObjectId(),
         members: data,
-        accept: false
+        accept: false,
+        request: false
     }
     const sendData = await client.db("chitchat").collection("conversation").insertOne(finalData)
     if (sendData) {
@@ -40,7 +39,7 @@ router.post("/conversation-create", auth, async function (request, response) {
     }
 })
 
-
+//to get the id of the other user by using conversation id
 router.get("/getconversations/:id", auth, async function (request, response) {
     const { id } = request.params
     const arr = []
@@ -49,6 +48,8 @@ router.get("/getconversations/:id", auth, async function (request, response) {
 
 })
 
+
+//to get all chat by using particular conversation id
 router.get("/get-chat/:id", auth, async function (request, response) {
     const { id } = request.params
     const getChat = await client.db('chitchat').collection("all-msgs").find({
@@ -58,6 +59,7 @@ router.get("/get-chat/:id", auth, async function (request, response) {
 
 })
 
+//to save the msg in the database
 router.post("/send-message", auth, async function (request, response) {
     const { data } = request.body
 

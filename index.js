@@ -25,7 +25,7 @@ app.use("/", messengerRouter)
 app.get("/", function (request, response) {
     console.log("express connected")
 })
-const users = []
+let users = []
 const adduser = async (userID, socketID) => {
     !users.some((user) => (user.userID === userID)) &&
         users.push({ userID, socketID })
@@ -37,7 +37,7 @@ const getReceiverS = (userId) => {
 }
 
 const remove = (userid) => {
-    return users.filter((user) => user.userID != userid)
+    users = users.filter((user) => user.userID != userid)
 }
 io.on("connection", (socket) => {
 
@@ -48,11 +48,8 @@ io.on("connection", (socket) => {
         io.emit("getUsers", users)
     })
     socket.on("sendMessage", (data) => {
-        console.log(data)
         const recId = data.receiver_id[0]
-        console.log(recId)
         const ruser = getReceiverS(recId)
-        console.log(ruser)
         io.to(ruser.socketID).emit("getMessage", {
             conversation_id: data.conversation_id,
             sender: data.sender,
@@ -63,8 +60,9 @@ io.on("connection", (socket) => {
     })
     socket.on("disconnection", (data) => {
         remove(data)
-        console.log(users + "removed")
+        io.emit("disusers", users)
     })
+
 })
 
 

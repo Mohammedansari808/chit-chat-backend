@@ -16,15 +16,12 @@ dotenv.config()
 // Authorization and Authentication
 //after signup user will receive a verification mail
 router.post("/signup", async function (request, response) {
-    console.log("im in")
     const { username, password, email } = request.body
     const isSCheck = await signupUserCheck(username)
     const isSCheckE = await signupEmailCheck(email)
     const isCheck = await loginUserCheck(username)
     const isCheckE = await loginEmailCheck(email)
-    console.log("2 good")
     if (!isCheck && !isCheckE && !isSCheck && !isSCheckE) {
-        console.log("3 good")
         const Hashedpassword = await Hashed(password)
         async function Hashed(password) {
             const NO_OF_ROUNDS = 10
