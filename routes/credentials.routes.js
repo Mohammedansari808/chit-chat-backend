@@ -61,7 +61,7 @@ router.post("/signup", async function (request, response) {
                     },
                 });
                 let info = await transporter.sendMail({
-                    from: '"jujutsu store" <foo@example.com>', // sender address
+                    from: '"chit chat" <foo@example.com>', // sender address
                     to: `${email}`, // list of receivers
                     subject: "Verification link for Signin", // Subject line
                     text: "Hello world?", // plain text body
