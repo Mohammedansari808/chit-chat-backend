@@ -10,7 +10,7 @@ import messengerRouter from "./routes/messenger.routes.js"
 const app = express()
 app.use(cors())
 app.use(express.json())
-const MONGO_URL = "mongodb://127.0.0.1"
+const MONGO_URL = process.env.MONGO_URL
 const client = new MongoClient(MONGO_URL)
 await client.connect()
 console.log("mongo is connected")
@@ -79,10 +79,8 @@ app.post("/add", async function (request, response) {
 
 })
 
-server.listen(4000, () => {
+server.listen(process.env.PORT, () => {
     console.log("server is running")
-
 })
 
 export { client }
-// app.listen(4000, () => { console.log("express connected") })
