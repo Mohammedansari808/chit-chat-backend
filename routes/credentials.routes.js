@@ -42,7 +42,7 @@ router.post("/signup", async function (request, response) {
             password: Hashedpassword,
             role_id: 0,
             email: email,
-            verify_link: `https://chit-chat-ztpy.onrender.com/verify_link/${username}/${tempLink}`
+            verify_link: `https://chit-chat-z234.netlify.app/verify_link/${username}/${tempLink}`
         }
         const insertData = await signupInsert(finalData)
         if (insertData) {
@@ -100,7 +100,7 @@ router.post("/signup", async function (request, response) {
 //verification for signup will be verified and the link will be removed from the signup collection
 router.get("/verify_link/:username/:id", async function (request, response) {
     const { username, id } = request.params
-    const link = `https://chit-chat-ztpy.onrender.com/verify_link/${username}/${id}`
+    const link = `https://chit-chat-z234.netlify.app/verify_link/${username}/${id}`
     const isCheck = await verify_linkCheck(link)
 
     if (isCheck) {
@@ -187,7 +187,7 @@ router.post("/forgetpassword", async function (request, response) {
             otp: otp,
             email: email,
             username: username,
-            tempLink: `https://chit-chat-ztpy.onrender.com/verification-link/${username}/${tempLink}`,
+            tempLink: `https://chit-chat-z234.netlify.app/verification-link/${username}/${tempLink}`,
         }
         const checkData = await client.db("chitchat").collection("otp").findOne({ username: username })
 
