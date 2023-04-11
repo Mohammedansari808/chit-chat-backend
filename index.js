@@ -17,9 +17,10 @@ console.log("mongo is connected")
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "https://chit-chat-z234.netlify.app"
+        origin: "http://localhost:3000"
     }
 });
+// https://chit-chat-z234.netlify.app
 app.use("/", credentialRouter)
 app.use("/", messengerRouter)
 app.get("/", function (request, response) {
@@ -50,12 +51,15 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", (data) => {
         const recId = data.receiver_id[0]
         const ruser = getReceiverS(recId)
-        io.to(ruser.socketID).emit("getMessage", {
-            conversation_id: data.conversation_id,
-            sender: data.sender,
-            sender_name: data.sender_name,
-            text: data.text
-        })
+        if (ruser) {
+            io.to(ruser.socketID).emit("getMessage", {
+                conversation_id: data.conversation_id,
+                sender: data.sender,
+                sender_name: data.sender_name,
+                text: data.text
+            })
+        }
+
 
     })
     socket.on("disconnection", (data) => {
