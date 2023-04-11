@@ -17,7 +17,7 @@ console.log("mongo is connected")
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: "https://chit-chat-z234.netlify.app"
     }
 });
 // https://chit-chat-z234.netlify.app
